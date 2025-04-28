@@ -1,5 +1,4 @@
 ﻿using Emovere.SharedKernel.DomainObjects;
-using Rooms.Domain.Enums;
 using Rooms.Domain.ValueObjects;
 
 namespace Rooms.Domain.Entities
@@ -17,7 +16,6 @@ namespace Rooms.Domain.Entities
         public Guid CustomerId { get; private set; }
         public Guid RoomId { get; private set; }
         public Email Email { get; private set; } = default!;
-        public EParticipantStatus Status { get; private set; }
 
         protected override void Validate()
         {
