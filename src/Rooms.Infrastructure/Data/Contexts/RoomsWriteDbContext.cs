@@ -1,7 +1,6 @@
 ﻿using Emovere.SharedKernel.Events;
 using Microsoft.EntityFrameworkCore;
 using Rooms.Domain.Entities;
-using System.Reflection;
 
 namespace Rooms.Infrastructure.Data.Contexts
 {
@@ -14,7 +13,8 @@ namespace Rooms.Infrastructure.Data.Contexts
         {
             modelBuilder.Ignore<Event>();
 
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            modelBuilder.ApplyConfiguration(new Mappings.WriteModel.RoomsMapping());
+            modelBuilder.ApplyConfiguration(new Mappings.WriteModel.ParticipantsMapping());
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rooms.API", "src\Rooms.API\Rooms.API.csproj", "{02729EDB-B847-457F-AC9C-421704B9058F}"
 EndProject
@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rooms.UnitTests", "tests\Ro
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{5CF220C4-7A83-42FE-9968-2328F4F65EA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emovere.SharedKernel", "..\Emovere.SharedKernel\Emovere.SharedKernel.csproj", "{B9F62040-3C61-17CF-EB71-00AD32329238}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emovere.SharedKernel", "..\Emovere.SharedKernel\Emovere.SharedKernel.csproj", "{E398B492-C484-4F64-BAFD-264E5395E8DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +41,10 @@ Global
 		{69546C7A-9075-43E1-8913-DC00E6B0A7F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69546C7A-9075-43E1-8913-DC00E6B0A7F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69546C7A-9075-43E1-8913-DC00E6B0A7F4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B9F62040-3C61-17CF-EB71-00AD32329238}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B9F62040-3C61-17CF-EB71-00AD32329238}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B9F62040-3C61-17CF-EB71-00AD32329238}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B9F62040-3C61-17CF-EB71-00AD32329238}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E398B492-C484-4F64-BAFD-264E5395E8DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E398B492-C484-4F64-BAFD-264E5395E8DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E398B492-C484-4F64-BAFD-264E5395E8DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E398B492-C484-4F64-BAFD-264E5395E8DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,7 +54,7 @@ Global
 		{7986AE0D-E8B3-4292-9137-4BF0B555EE79} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{90EF4990-684A-4D10-8593-6CB10D4217A1} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{69546C7A-9075-43E1-8913-DC00E6B0A7F4} = {0953A44D-D983-4684-BC5B-DE13BB328188}
-		{B9F62040-3C61-17CF-EB71-00AD32329238} = {5CF220C4-7A83-42FE-9968-2328F4F65EA0}
+		{E398B492-C484-4F64-BAFD-264E5395E8DF} = {5CF220C4-7A83-42FE-9968-2328F4F65EA0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E9DFA65A-509C-4614-AF05-5A3A113A2517}

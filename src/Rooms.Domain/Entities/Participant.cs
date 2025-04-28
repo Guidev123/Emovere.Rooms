@@ -16,6 +16,7 @@ namespace Rooms.Domain.Entities
         public Guid CustomerId { get; private set; }
         public Guid RoomId { get; private set; }
         public Email Email { get; private set; } = default!;
+        public Room Room { get; private set; } = default!;
 
         protected override void Validate()
         {
