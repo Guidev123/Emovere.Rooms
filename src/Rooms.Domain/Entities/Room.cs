@@ -11,7 +11,7 @@ namespace Rooms.Domain.Entities
         public const int MAX_VIP_PARTICIPANTS = 500;
         public const int MAX_EXCLUSIVE_PARTICIPANTS = 1000;
 
-        public Room(Guid hostId, string name, string details, ERoomType type, DateTime startDate, DateTime? endDate)
+        public Room(Guid hostId, string name, string details, ERoomType type, DateTime startDate, DateTime? endDate = null)
         {
             HostId = hostId;
             Type = type;

@@ -1,12 +1,14 @@
 ﻿using Emovere.SharedKernel.Notifications;
 using Rooms.Domain.Entities;
+using Rooms.Domain.Interfaces.Repositories;
 using Rooms.Domain.Interfaces.Services;
 using Rooms.Domain.Strategies.Factories;
 
 namespace Rooms.Domain.DomainServices
 {
     public sealed class RoomDomainService(IAddParticipantStrategyFactory strategyFactory,
-                                           INotificator notificator)
+                                           INotificator notificator,
+                                           IRoomRepository roomRepository)
                                          : IRoomDomainService
     {
         public void AddParticipant(Participant participant, Room room)
@@ -17,9 +19,15 @@ namespace Rooms.Domain.DomainServices
 
             if(!participantAddedSuccessfully)
                 notificator.HandleNotification(new("Participant cannot be added to the room."));
+
+            roomRepository.Update(room);
         }
 
-        public void RemoveParticipant(Participant participant, Room room) 
-            => room.RemoveParticipant(participant);
+        public void RemoveParticipant(Participant participant, Room room)
+        {
+            room.RemoveParticipant(participant);
+
+            roomRepository.Update(room);
+        }
     }
 }
