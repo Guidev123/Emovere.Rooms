@@ -1,8 +1,8 @@
 ﻿using Emovere.SharedKernel.Notifications;
 using Microsoft.EntityFrameworkCore;
 using MidR.DependencyInjection;
-using Rooms.Domain.DomainServices;
 using Rooms.Domain.Interfaces.Services;
+using Rooms.Domain.Services;
 using Rooms.Domain.Strategies.Contexts;
 using Rooms.Domain.Strategies.Factories;
 using Rooms.Infrastructure.Data.Contexts;
@@ -29,7 +29,7 @@ namespace Rooms.API.Configurations
 
         private static void AddDomainServices(this WebApplicationBuilder builder)
         {
-            builder.Services.AddScoped<IRoomDomainService, RoomDomainService>();
+            builder.Services.AddScoped<IRoomService, RoomService>();
         }
 
         private static void AddNotification(this WebApplicationBuilder builder)
