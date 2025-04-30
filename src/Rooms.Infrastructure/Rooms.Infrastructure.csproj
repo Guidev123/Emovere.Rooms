@@ -15,6 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\..\Emovere.Core\src\Emovere.Infrastructure\Emovere.Infrastructure.csproj" />
 		<ProjectReference Include="..\Rooms.Domain\Rooms.Domain.csproj" />
 	</ItemGroup>
 

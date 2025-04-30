@@ -1,4 +1,6 @@
-﻿using Emovere.SharedKernel.Abstractions.Mediator;
+﻿using Emovere.Infrastructure.Email;
+using Emovere.Infrastructure.EventSourcing;
+using Emovere.SharedKernel.Abstractions.Mediator;
 using Emovere.SharedKernel.Notifications;
 using Microsoft.EntityFrameworkCore;
 using MidR.DependencyInjection;
@@ -8,7 +10,7 @@ using Rooms.Domain.Services;
 using Rooms.Domain.Strategies.Factories;
 using Rooms.Infrastructure.Data.Contexts;
 using Rooms.Infrastructure.Data.Repositories;
-using System.Reflection;
+using SendGrid.Extensions.DependencyInjection;
 
 namespace Rooms.API.Configurations
 {
@@ -24,11 +26,23 @@ namespace Rooms.API.Configurations
             builder.AddMediatorHandlers();
             builder.AddContextsConfiguration();
             builder.AddRepositories();
+            builder.AddEmailServices();
+            builder.Services.AddEventStoreConfiguration();
+            builder.Services.AddHttpContextAccessor();
         }
 
         private static void AddRoomStrategy(this WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<IAddParticipantStrategyFactory, AddParticipantStrategyFactory>();
+        }
+
+        private static void AddEmailServices(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddSendGrid(x =>
+            {
+                x.ApiKey = builder.Configuration.GetValue<string>("EmailSettings:ApiKey");
+            });
+            builder.Services.AddScoped<IEmailService, EmailService>();
         }
 
         private static void AddDomainServices(this WebApplicationBuilder builder)
@@ -41,8 +55,6 @@ namespace Rooms.API.Configurations
 
         private static void AddMediatorHandlers(this WebApplicationBuilder builder)
         {
-            Assembly.Load(HANDLERS_ASSEMBLY_NAME);
-
             builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
             builder.Services.AddMidR(HANDLERS_ASSEMBLY_NAME);
         }

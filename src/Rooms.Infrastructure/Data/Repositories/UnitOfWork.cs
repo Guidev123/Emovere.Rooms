@@ -1,8 +1,8 @@
-﻿using Emovere.SharedKernel.Abstractions.Mediator;
+﻿using Emovere.Infrastructure.EventSourcing;
+using Emovere.SharedKernel.Abstractions.Mediator;
 using Microsoft.EntityFrameworkCore.Storage;
 using Rooms.Domain.Interfaces.Repositories;
 using Rooms.Infrastructure.Data.Contexts;
-using Rooms.Infrastructure.Extensions;
 
 namespace Rooms.Infrastructure.Data.Repositories
 {
