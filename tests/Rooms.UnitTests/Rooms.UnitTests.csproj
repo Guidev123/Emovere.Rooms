@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Rooms.API\Rooms.API.csproj" />
     <ProjectReference Include="..\..\src\Rooms.Infrastructure\Rooms.Infrastructure.csproj" />
   </ItemGroup>
 
