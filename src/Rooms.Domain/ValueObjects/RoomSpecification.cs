@@ -8,11 +8,11 @@ namespace Rooms.Domain.ValueObjects
         public string Description { get; }
         public int MaxParticipantsNumber { get; }
 
-        public RoomSpecification(string name, string description, int maxParticipantsQuantity)
+        public RoomSpecification(string name, string description, int maxParticipantsNumber)
         {
             Name = name;
             Description = description;
-            MaxParticipantsNumber = maxParticipantsQuantity;
+            MaxParticipantsNumber = maxParticipantsNumber;
             Validate();
         }
 

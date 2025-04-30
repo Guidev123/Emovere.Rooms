@@ -13,6 +13,9 @@ namespace Rooms.Domain.Entities
             Validate();
         }
 
+        protected Participant()
+        { }
+
         public Guid CustomerId { get; private set; }
         public Guid RoomId { get; private set; }
         public Email Email { get; private set; } = default!;

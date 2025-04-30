@@ -19,11 +19,14 @@ namespace Rooms.Domain.Services
                 .GetStrategy(room.Plan)
                 .AddParticipant(participant, room);
 
-            if(!participantAddedSuccessfully)
+            if (!participantAddedSuccessfully)
+            {
                 notificator.HandleNotification(new(EReportMessages.PARTICIPANT_CANNOT_BE_ADDED_TO_ROOM.GetEnumDescription()));
+                return false;
+            }
 
             roomRepository.Update(room);
-            return await unitOfWork.CommitAsync();
+            return await unitOfWork.SaveChangesAsync();
         }
 
         public async Task<bool> RemoveParticipantAsync(Participant participant, Room room)
@@ -31,7 +34,7 @@ namespace Rooms.Domain.Services
             room.RemoveParticipant(participant);
 
             roomRepository.Update(room);
-            return await unitOfWork.CommitAsync();
+            return await unitOfWork.SaveChangesAsync();
         }
     }
 }

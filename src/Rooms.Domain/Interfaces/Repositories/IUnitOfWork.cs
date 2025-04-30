@@ -1,9 +1,10 @@
 ﻿namespace Rooms.Domain.Interfaces.Repositories
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
         Task BeginTransactionAsync();
-        Task<bool> CommitAsync();
+        Task<bool> CommitTransactionAsync();
         Task<bool> RollbackAsync();
+        Task<bool> SaveChangesAsync();
     }
 }

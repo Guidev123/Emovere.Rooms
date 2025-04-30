@@ -11,10 +11,9 @@ namespace Rooms.Domain.Entities
         public const int MAX_VIP_PARTICIPANTS = 500;
         public const int MAX_EXCLUSIVE_PARTICIPANTS = 1000;
 
-        public Room(Guid hostId, string name, string details, ERoomType type, DateTime startDate, DateTime? endDate = null)
+        public Room(Guid hostId, string name, string details, DateTime startDate, DateTime? endDate = null)
         {
             HostId = hostId;
-            Type = type;
             StartDate = startDate;
             EndDate = endDate;
             Plan = ERoomPlan.Standard;
@@ -23,10 +22,12 @@ namespace Rooms.Domain.Entities
             Validate();
         }
 
+        protected Room()
+        { }
+
         public Guid HostId { get; private set; }
         public RoomSpecification RoomSpecification { get; private set; } = default!;
         public ERoomPlan Plan { get; private set; }
-        public ERoomType Type { get; private set; }
         public ERoomStatus Status { get; private set; }
         public DateTime StartDate { get; private set; }
         public DateTime? EndDate { get; private set; }
@@ -36,7 +37,7 @@ namespace Rooms.Domain.Entities
 
         private readonly List<Participant> _participants = [];
 
-        public void SetEndDate(DateTime endDate)
+        public void UpdateEndDate(DateTime endDate)
         {
             AssertionConcern.EnsureTrue(endDate > StartDate, "End date must be greater than start date.");
             EndDate = endDate;

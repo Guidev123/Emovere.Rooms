@@ -1,28 +1,59 @@
-﻿using Emovere.SharedKernel.DomainObjects;
+﻿using Emovere.SharedKernel.Abstractions.Mediator;
+using Microsoft.EntityFrameworkCore.Storage;
 using Rooms.Domain.Interfaces.Repositories;
+using Rooms.Infrastructure.Data.Contexts;
+using Rooms.Infrastructure.Extensions;
 
 namespace Rooms.Infrastructure.Data.Repositories
 {
     public sealed class UnitOfWork : IUnitOfWork
     {
-        public Task BeginTransactionAsync()
+        private IDbContextTransaction? _transaction;
+        private readonly IMediatorHandler _mediatorHandler;
+        private readonly RoomsWriteDbContext _writeDbContext;
+
+        public UnitOfWork(IMediatorHandler mediatorHandler, RoomsWriteDbContext writeDbContext)
         {
-            throw new NotImplementedException();
+            _mediatorHandler = mediatorHandler;
+            _writeDbContext = writeDbContext;
         }
 
-        public Task<bool> CommitAsync()
+        public async Task BeginTransactionAsync()
+            => _transaction = await _writeDbContext.Database.BeginTransactionAsync();
+
+        public async Task<bool> CommitTransactionAsync()
         {
-            throw new NotImplementedException();
+            if (_transaction is null) return false;
+
+            await _transaction.CommitAsync();
+            await PublishDomainEventsAsync();
+
+            return true;
         }
 
-        public Task PublishDomainEventsAsync<TEntity>(TEntity entity) where TEntity : Entity
+        public async Task<bool> RollbackAsync()
         {
-            throw new NotImplementedException();
+            if (_transaction is null) return false;
+
+            await _transaction.RollbackAsync();
+            return true;
         }
 
-        public Task<bool> RollbackAsync()
+        public async Task<bool> SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            if (_transaction is null)
+                await PublishDomainEventsAsync();
+
+            return await _writeDbContext.SaveChangesAsync() > 0;
+        }
+
+        private async Task PublishDomainEventsAsync()
+            => await _mediatorHandler.PublishEventsAsync(_writeDbContext);
+
+        public void Dispose()
+        {
+            _transaction?.Dispose();
+            _writeDbContext?.Dispose();
         }
     }
 }

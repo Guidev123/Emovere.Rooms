@@ -23,6 +23,7 @@ namespace Rooms.Infrastructure.Data.Mappings.WriteModel
                 .HasColumnType("VARCHAR(256)").IsRequired();
 
                 roomsSpecification.Property(x => x.MaxParticipantsNumber)
+                .HasColumnName("MaxParticipantsNumber")
                 .IsRequired();
             });
 
