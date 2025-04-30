@@ -5,6 +5,8 @@ namespace Rooms.Domain.Enums
 {
     public enum EReportMessages
     {
+        [Description("Error: Validation Error.")]
+        VALIDATION_ERROR,
         [Description("Error: Participant cannot be added to the room.")]
         PARTICIPANT_CANNOT_BE_ADDED_TO_ROOM,
         [Description("Error: Fail to persist data.")]

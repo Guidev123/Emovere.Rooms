@@ -1,4 +1,6 @@
 ﻿using Bogus;
+using Emovere.Communication.IntegrationEvents;
+using Emovere.Infrastructure.Bus;
 using Emovere.SharedKernel.Notifications;
 using Moq;
 using Moq.AutoMock;
@@ -6,7 +8,6 @@ using Rooms.API.Application.Commands.Rooms.Create;
 using Rooms.Domain.Entities;
 using Rooms.Domain.Enums;
 using Rooms.Domain.Interfaces.Repositories;
-using System.Threading.Tasks;
 
 namespace Rooms.UnitTests.Application.Handlers
 {
@@ -17,12 +18,14 @@ namespace Rooms.UnitTests.Application.Handlers
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         private readonly Mock<IRoomRepository> _roomRepositoryMock;
         private readonly Mock<INotificator> _notificatorMock;
+        private readonly Mock<IMessageBus> _messageBusMock;
 
         public CreateRoomHandlerTests()
         {
             _unitOfWorkMock = _mocker.GetMock<IUnitOfWork>();
             _roomRepositoryMock = _mocker.GetMock<IRoomRepository>();
             _notificatorMock = _mocker.GetMock<INotificator>();
+            _messageBusMock = _mocker.GetMock<IMessageBus>();
         }
 
         [Fact(DisplayName = "Should Create Room With Success")]
@@ -41,7 +44,11 @@ namespace Rooms.UnitTests.Application.Handlers
                 .Setup(r => r.Create(It.IsAny<Room>()))
                 .Verifiable();
 
-            var handler = new CreateRoomHandler(_notificatorMock.Object, _unitOfWorkMock.Object, _roomRepositoryMock.Object);
+            _messageBusMock
+                .Setup(x => x.PublishAsync(It.IsAny<CreatedRoomIntegrationEvent>()))
+                .Returns(Task.CompletedTask);
+
+            var handler = new CreateRoomHandler(_notificatorMock.Object, _messageBusMock.Object, _unitOfWorkMock.Object, _roomRepositoryMock.Object);
 
             // Act
             var result = await handler.ExecuteAsync(command, CancellationToken.None);
@@ -53,6 +60,48 @@ namespace Rooms.UnitTests.Application.Handlers
             Assert.Equal(result.Message, EReportMessages.ROOM_CREATED_WITH_SUCCESS.GetEnumDescription());
             _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Once);
             _roomRepositoryMock.Verify(r => r.Create(It.IsAny<Room>()), Times.Once);
+            _messageBusMock.Verify(x => x.PublishAsync(It.IsAny<CreatedRoomIntegrationEvent>()), Times.Once);
         }
+
+        [Fact(DisplayName = "Should Fail to Create Room With Invalid Data")]
+        [Trait("Application", "Room Handlers")]
+        public async Task ExecuteAsync_TryCreateRoomWithInvalidData_ShouldReturnValidationErrors()
+        {
+            // Arrange
+            SetupNotifications();
+            var command = new CreateRoomCommand(string.Empty, string.Empty, DateTime.UtcNow);
+            command.SetHostId(Guid.NewGuid());
+
+            _messageBusMock
+                .Setup(x => x.PublishAsync(It.IsAny<CreatedRoomIntegrationEvent>()))
+                .Returns(Task.CompletedTask);
+
+            var handler = new CreateRoomHandler(_notificatorMock.Object, _messageBusMock.Object, _unitOfWorkMock.Object, _roomRepositoryMock.Object);
+
+            // Act 
+            var result = await handler.ExecuteAsync(command, CancellationToken.None);
+
+            // Assert
+            Assert.False(result.IsSuccess);
+            Assert.NotNull(result.Errors);
+            Assert.Equal(5, result.Errors.Count);
+            Assert.Equal(400, result.Code);
+            Assert.Equal(result.Message, EReportMessages.VALIDATION_ERROR.GetEnumDescription());
+            _messageBusMock.Verify(x => x.PublishAsync(It.IsAny<CreatedRoomIntegrationEvent>()), Times.Never);
+        }
+
+        #region Private Methods
+
+        private void SetupNotifications()
+        {
+            var notifications = new List<Notification>();
+            _notificatorMock.Setup(n => n.HandleNotification(It.IsAny<Notification>()))
+                .Callback<Notification>(notifications.Add);
+
+            _notificatorMock.Setup(n => n.GetNotifications())
+                .Returns(() => notifications);
+        }
+
+        #endregion
     }
 }

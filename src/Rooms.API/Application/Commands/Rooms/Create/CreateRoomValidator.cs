@@ -2,9 +2,10 @@
 
 namespace Rooms.API.Application.Commands.Rooms.Create
 {
-    public sealed class CreateRoomCommandValidator : AbstractValidator<CreateRoomCommand>
+    public sealed class CreateRoomValidator : AbstractValidator<CreateRoomCommand>
     {
-        public CreateRoomCommandValidator()
+        private const int MIN_START_DATE_IN_FUTURE = 30;
+        public CreateRoomValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty()
@@ -21,8 +22,8 @@ namespace Rooms.API.Application.Commands.Rooms.Create
             RuleFor(x => x.StartDate)
                 .NotEmpty()
                 .WithMessage("Start date is required.")
-                .GreaterThan(DateTime.UtcNow)
-                .WithMessage("Start date must be in the future.");
+                .GreaterThan(DateTime.UtcNow.AddMinutes(MIN_START_DATE_IN_FUTURE))
+                .WithMessage($"The start date must be {MIN_START_DATE_IN_FUTURE} minutes in the future.");
         }
     }
 }

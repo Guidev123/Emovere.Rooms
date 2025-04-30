@@ -1,5 +1,4 @@
-﻿using Emovere.SharedKernel.Events;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Rooms.Domain.Entities;
 
 namespace Rooms.Infrastructure.Data.Contexts
@@ -11,8 +10,6 @@ namespace Rooms.Infrastructure.Data.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Ignore<Event>();
-
             modelBuilder.ApplyConfiguration(new Mappings.ReadModel.RoomsMapping());
             modelBuilder.ApplyConfiguration(new Mappings.ReadModel.ParticipantsMapping());
         }

@@ -11,10 +11,12 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.4" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.4" />
 		<PackageReference Include="MongoDB.EntityFrameworkCore" Version="9.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\..\Emovere.Core\src\Emovere.Communication\Emovere.Communication.csproj" />
 		<ProjectReference Include="..\..\..\Emovere.Core\src\Emovere.Infrastructure\Emovere.Infrastructure.csproj" />
 		<ProjectReference Include="..\Rooms.Domain\Rooms.Domain.csproj" />
 	</ItemGroup>

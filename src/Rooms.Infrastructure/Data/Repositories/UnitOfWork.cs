@@ -1,4 +1,5 @@
-﻿using Emovere.Infrastructure.EventSourcing;
+﻿using Emovere.Infrastructure.Bus;
+using Emovere.Infrastructure.EventSourcing;
 using Emovere.SharedKernel.Abstractions.Mediator;
 using Microsoft.EntityFrameworkCore.Storage;
 using Rooms.Domain.Interfaces.Repositories;

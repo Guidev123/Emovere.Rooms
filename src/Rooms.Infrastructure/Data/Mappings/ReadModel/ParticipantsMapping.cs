@@ -13,8 +13,25 @@ namespace Rooms.Infrastructure.Data.Mappings.ReadModel
 
             builder.HasKey(x => x.Id);
             builder.Property(c => c.Id)
-               .HasConversion(guid => guid.ToString(), str => Guid.Parse(str))
-               .IsRequired();
+                .HasConversion(guid => guid.ToString(), str => Guid.Parse(str))
+                .IsRequired();
+
+            builder.Property(c => c.CustomerId)
+                .HasConversion(guid => guid.ToString(), str => Guid.Parse(str))
+                .IsRequired();
+
+            builder.Property(c => c.RoomId)
+                .HasConversion(guid => guid.ToString(), str => Guid.Parse(str))
+                .IsRequired();
+
+            builder.Ignore(x => x.Events);
+
+            builder.OwnsOne(p => p.Email, emailBuilder =>
+            {
+                emailBuilder.Property(e => e.Address)
+                    .HasElementName("email")
+                    .IsRequired();
+            });
         }
     }
 }

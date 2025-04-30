@@ -107,6 +107,33 @@ namespace Rooms.Domain.Entities
         private void GetCurrentParticipantsQuantity()
             => ParticipantsQuantity = _participants.Count;
 
+        public static Room Reconstruct(
+            Guid id,
+            Guid hostId,
+            string name,
+            string details,
+            int maxParticipantsNumber,
+            ERoomPlan plan,
+            ERoomStatus status,
+            DateTime startDate,
+            DateTime? endDate,
+            decimal? price,
+            int participantsQuantity)
+        {
+            return new()
+            {
+                Id = id,
+                HostId = hostId,
+                RoomSpecification = new(name, details, maxParticipantsNumber),
+                Plan = plan,
+                Status = status,
+                StartDate = startDate,
+                EndDate = endDate,
+                Price = price,
+                ParticipantsQuantity = participantsQuantity
+            };
+        }
+
         protected override void Validate()
         {
             AssertionConcern.EnsureDifferent(HostId, Guid.Empty, "HostId cannot be empty.");

@@ -2,17 +2,29 @@ using Rooms.API.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi();
-
-builder.AddDependenciesConfiguration();
+builder.AddDomainServicesConfiguration()
+       .AddRoomStrategyConfiguration()
+       .AddDomainServicesConfiguration()
+       .AddNotificationConfiguration()
+       .AddMediatorHandlersConfiguration()
+       .AddContextsConfiguration()
+       .AddRepositoriesConfiguration()
+       .AddMessageBusConfiguration()
+       .AddEmailServicesConfiguration()
+       .AddSwaggerConfig()
+       .AddSecurityConfiguration()
+       .AddBackgroundServicesConfiguration()
+       .AddServicesConfiguration();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
-app.UseHttpsRedirection();
+app.UseEndpoints()
+    .UseOpenApi()
+    .UseSwaggerConfig()
+    .UseHttpsRedirection()
+    .UseAuthentication()
+    .UseAuthorization();
 
 app.Run();
+
+public partial class Program { }
