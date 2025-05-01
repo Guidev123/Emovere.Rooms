@@ -45,7 +45,7 @@ namespace Rooms.UnitTests.Application.Handlers
                 .Verifiable();
 
             _messageBusMock
-                .Setup(x => x.PublishAsync(It.IsAny<CreatedRoomIntegrationEvent>()))
+                .Setup(x => x.PublishAsync(It.IsAny<CreatedRoomIntegrationEvent>(), CancellationToken.None))
                 .Returns(Task.CompletedTask);
 
             var handler = new CreateRoomHandler(_notificatorMock.Object, _messageBusMock.Object, _unitOfWorkMock.Object, _roomRepositoryMock.Object);
@@ -60,7 +60,7 @@ namespace Rooms.UnitTests.Application.Handlers
             Assert.Equal(result.Message, EReportMessages.ROOM_CREATED_WITH_SUCCESS.GetEnumDescription());
             _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Once);
             _roomRepositoryMock.Verify(r => r.Create(It.IsAny<Room>()), Times.Once);
-            _messageBusMock.Verify(x => x.PublishAsync(It.IsAny<CreatedRoomIntegrationEvent>()), Times.Once);
+            _messageBusMock.Verify(x => x.PublishAsync(It.IsAny<CreatedRoomIntegrationEvent>(), CancellationToken.None), Times.Once);
         }
 
         [Fact(DisplayName = "Should Fail to Create Room With Invalid Data")]
@@ -73,7 +73,7 @@ namespace Rooms.UnitTests.Application.Handlers
             command.SetHostId(Guid.NewGuid());
 
             _messageBusMock
-                .Setup(x => x.PublishAsync(It.IsAny<CreatedRoomIntegrationEvent>()))
+                .Setup(x => x.PublishAsync(It.IsAny<CreatedRoomIntegrationEvent>(), CancellationToken.None))
                 .Returns(Task.CompletedTask);
 
             var handler = new CreateRoomHandler(_notificatorMock.Object, _messageBusMock.Object, _unitOfWorkMock.Object, _roomRepositoryMock.Object);
@@ -87,7 +87,7 @@ namespace Rooms.UnitTests.Application.Handlers
             Assert.Equal(5, result.Errors.Count);
             Assert.Equal(400, result.Code);
             Assert.Equal(result.Message, EReportMessages.VALIDATION_ERROR.GetEnumDescription());
-            _messageBusMock.Verify(x => x.PublishAsync(It.IsAny<CreatedRoomIntegrationEvent>()), Times.Never);
+            _messageBusMock.Verify(x => x.PublishAsync(It.IsAny<CreatedRoomIntegrationEvent>(), CancellationToken.None), Times.Never);
         }
 
         #region Private Methods

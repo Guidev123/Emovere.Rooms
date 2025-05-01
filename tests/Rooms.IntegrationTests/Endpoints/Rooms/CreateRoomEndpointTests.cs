@@ -12,7 +12,7 @@ namespace Rooms.IntegrationTests.Endpoints.Rooms
         public async Task CreateRoomEndpoint_HandleAsync_ShouldCreateRoomWithSuccess()
         {
             // Arrange
-            var command = new CreateRoomCommand(testsFixture.Faker.Name.FullName(), testsFixture.Faker.Lorem.Paragraph(), DateTime.UtcNow.AddDays(1));
+            var command = new CreateRoomCommand(testsFixture.Faker.Name.FullName(), testsFixture.Faker.Lorem.Letter(200), DateTime.UtcNow.AddDays(1));
 
             // Act
             var response = await testsFixture.HttpClient.PostAsync("/api/v1/rooms", testsFixture.GetContent(command));

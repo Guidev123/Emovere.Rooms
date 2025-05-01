@@ -13,6 +13,6 @@ namespace Rooms.API.Endpoints.Rooms
             .Produces<Response<CreateRoomResponse>>();
 
         private static async Task<IResult> HandleAsync(CreateRoomCommand command, IMediatorHandler mediatorHandler)
-            => Endpoint.CustomResponse(await mediatorHandler.SendCommand(command));
+            => Endpoint.CustomResponse(await mediatorHandler.SendCommand(command).ConfigureAwait(false));
     }
 }

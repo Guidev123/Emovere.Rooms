@@ -20,7 +20,7 @@ namespace Rooms.API.Application.Commands.Rooms.Create
         {
             if(!ExecuteValidation(new CreateRoomValidator(), request))
                 return Response<CreateRoomResponse>.Failure(GetNotifications(), EReportMessages.VALIDATION_ERROR.GetEnumDescription());
-            request.SetHostId(Guid.NewGuid());
+            
             var room = request.MapToEntity();
             var result = await SaveRoomAsync(room);
             if (!result)
@@ -29,7 +29,7 @@ namespace Rooms.API.Application.Commands.Rooms.Create
                 return Response<CreateRoomResponse>.Failure(GetNotifications());
             }
 
-            await messageBus.PublishAsync(room.MapToIntegrationEvent());
+            await messageBus.PublishAsync(room.MapToIntegrationEvent(), cancellationToken);
 
             return Response<CreateRoomResponse>.Success(new(room.Id), 201, EReportMessages.ROOM_CREATED_WITH_SUCCESS.GetEnumDescription());
         }
