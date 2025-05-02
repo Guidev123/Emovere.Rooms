@@ -18,11 +18,11 @@ namespace Rooms.API.Endpoints
         {
             return response.Code switch
             {
-                200 => Results.Ok(response),
-                201 => Results.Created(string.Empty, response),
-                204 => Results.NoContent(),
-                400 => Results.BadRequest(response),
-                404 => Results.NotFound(response),
+                StatusCode.OK_STATUS_CODE => Results.Ok(response),
+                StatusCode.CREATED_STATUS_CODE => Results.Created(string.Empty, response),
+                StatusCode.NO_CONTENT_STATUS_CODE => Results.NoContent(),
+                StatusCode.BAD_REQUEST_STATUS_CODE => Results.BadRequest(response),
+                StatusCode.NOT_FOUND_STATUS_CODE => Results.NotFound(response),
                 _ => Results.InternalServerError(response)
             };
         }

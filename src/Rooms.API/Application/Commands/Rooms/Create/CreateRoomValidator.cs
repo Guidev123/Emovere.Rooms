@@ -5,6 +5,7 @@ namespace Rooms.API.Application.Commands.Rooms.Create
     public sealed class CreateRoomValidator : AbstractValidator<CreateRoomCommand>
     {
         private const int MIN_START_DATE_IN_FUTURE = 30;
+
         public CreateRoomValidator()
         {
             RuleFor(x => x.Name)

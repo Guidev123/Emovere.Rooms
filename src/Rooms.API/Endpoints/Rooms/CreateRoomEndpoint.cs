@@ -1,5 +1,4 @@
-﻿
-using Emovere.SharedKernel.Abstractions.Mediator;
+﻿using Emovere.SharedKernel.Abstractions.Mediator;
 using Emovere.SharedKernel.Responses;
 using Rooms.API.Application.Commands.Rooms.Create;
 
@@ -13,6 +12,9 @@ namespace Rooms.API.Endpoints.Rooms
             .Produces<Response<CreateRoomResponse>>();
 
         private static async Task<IResult> HandleAsync(CreateRoomCommand command, IMediatorHandler mediatorHandler)
-            => Endpoint.CustomResponse(await mediatorHandler.SendCommand(command).ConfigureAwait(false));
+        {
+            command.SetHostId(Guid.NewGuid());
+            return Endpoint.CustomResponse(await mediatorHandler.SendCommand(command).ConfigureAwait(false));
+        }
     }
 }

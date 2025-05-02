@@ -2,6 +2,7 @@
 using Emovere.Communication.IntegrationEvents;
 using Emovere.Infrastructure.Bus;
 using Emovere.SharedKernel.Notifications;
+using Emovere.SharedKernel.Responses;
 using Moq;
 using Moq.AutoMock;
 using Rooms.API.Application.Commands.Rooms.Create;
@@ -56,7 +57,7 @@ namespace Rooms.UnitTests.Application.Handlers
             // Assert
             Assert.True(result.IsSuccess);
             Assert.Null(result.Errors);
-            Assert.Equal(201, result.Code);
+            Assert.Equal(StatusCode.CREATED_STATUS_CODE, result.Code);
             Assert.Equal(result.Message, EReportMessages.ROOM_CREATED_WITH_SUCCESS.GetEnumDescription());
             _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Once);
             _roomRepositoryMock.Verify(r => r.Create(It.IsAny<Room>()), Times.Once);
@@ -78,14 +79,14 @@ namespace Rooms.UnitTests.Application.Handlers
 
             var handler = new CreateRoomHandler(_notificatorMock.Object, _messageBusMock.Object, _unitOfWorkMock.Object, _roomRepositoryMock.Object);
 
-            // Act 
+            // Act
             var result = await handler.ExecuteAsync(command, CancellationToken.None);
 
             // Assert
             Assert.False(result.IsSuccess);
             Assert.NotNull(result.Errors);
             Assert.Equal(5, result.Errors.Count);
-            Assert.Equal(400, result.Code);
+            Assert.Equal(StatusCode.BAD_REQUEST_STATUS_CODE, result.Code);
             Assert.Equal(result.Message, EReportMessages.VALIDATION_ERROR.GetEnumDescription());
             _messageBusMock.Verify(x => x.PublishAsync(It.IsAny<CreatedRoomIntegrationEvent>(), CancellationToken.None), Times.Never);
         }
@@ -102,6 +103,6 @@ namespace Rooms.UnitTests.Application.Handlers
                 .Returns(() => notifications);
         }
 
-        #endregion
+        #endregion Private Methods
     }
 }
