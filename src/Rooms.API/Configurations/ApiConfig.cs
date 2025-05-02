@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MidR.DependencyInjection;
 using Rooms.API.Endpoints;
+using Rooms.API.Middlewares;
 using Rooms.Domain.Interfaces.Repositories;
 using Rooms.Domain.Interfaces.Services;
 using Rooms.Domain.Services;
@@ -27,7 +28,7 @@ namespace Rooms.API.Configurations
             builder.Services.AddEventStoreConfiguration();
             builder.Services.AddHttpContextAccessor();
 
-            return builder; 
+            return builder;
         }
 
         public static WebApplicationBuilder AddSecurityConfiguration(this WebApplicationBuilder builder)
@@ -63,10 +64,17 @@ namespace Rooms.API.Configurations
             return builder;
         }
 
+        public static WebApplicationBuilder AddCustomMiddlewares(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddTransient<GlobalExceptionMiddleware>();
+
+            return builder;
+        }
+
         public static WebApplicationBuilder AddNotificationConfiguration(this WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<INotificator, Notificator>();
-         
+
             return builder;
         }
 
@@ -74,7 +82,7 @@ namespace Rooms.API.Configurations
         {
             builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
             builder.Services.AddMidR(Assembly.GetExecutingAssembly());
-         
+
             return builder;
         }
 
@@ -112,57 +120,16 @@ namespace Rooms.API.Configurations
             return builder;
         }
 
-        public static WebApplicationBuilder AddSwaggerConfig(this WebApplicationBuilder builder)
+        public static WebApplication UseEndpoints(this WebApplication app)
         {
-            builder.Services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo()
-                {
-                    Title = "API SalesSystem",
-                    Contact = new OpenApiContact() { Name = "Guilherme Nascimento", Email = "guirafaelrn@gmail.com" },
-                    License = new OpenApiLicense() { Name = "MIT", Url = new Uri("https://opensource.org/license/MIT") }
-                });
-
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = "Enter the JWT token in this format: Bearer <your token>",
-                    Name = "Authorization",
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey
-                });
-
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
-            });
-
-            return builder;
-        }
-
-        public static WebApplication UseSwaggerConfig(this WebApplication app)
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"));
+            app.MapEndpoints();
 
             return app;
         }
 
-        public static WebApplication UseEndpoints(this WebApplication app)
+        public static WebApplication UseMiddlewares(this WebApplication app)
         {
-            app.MapEndpoints();
+            app.UseMiddleware<GlobalExceptionMiddleware>();
 
             return app;
         }

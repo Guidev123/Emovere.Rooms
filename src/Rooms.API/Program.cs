@@ -14,11 +14,13 @@ builder.AddDomainServicesConfiguration()
        .AddSwaggerConfig()
        .AddSecurityConfiguration()
        .AddBackgroundServicesConfiguration()
-       .AddServicesConfiguration();
+       .AddServicesConfiguration()
+       .AddCustomMiddlewares();
 
 var app = builder.Build();
 
 app.UseEndpoints()
+    .UseMiddlewares()
     .UseOpenApi()
     .UseSwaggerConfig()
     .UseHttpsRedirection()
