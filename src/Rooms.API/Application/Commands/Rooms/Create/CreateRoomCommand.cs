@@ -18,6 +18,10 @@ namespace Rooms.API.Application.Commands.Rooms.Create
         public DateTime StartDate { get; private set; }
         public DateTime? EndDate { get; private set; }
 
-        public void SetHostId(Guid hostId) => HostId = hostId;
+        public void SetHostId(Guid hostId)
+        {
+            AggregateId = hostId;
+            HostId = hostId;
+        }
     }
 }
