@@ -16,7 +16,7 @@ namespace Rooms.API.Middlewares
             {
                 var problemDetails = new
                 {
-                    Message = EReportMessages.INTERNAL_SERVER_ERROR,
+                    Message = EReportMessages.INTERNAL_SERVER_ERROR.GetEnumDescription(),
                     IsSuccess = false,
                     Errors = new string[] { ex.Message }
                 };

@@ -2,7 +2,9 @@ using Rooms.API.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddDomainServicesConfiguration()
+builder
+    .AddApplicationServicesConfiguration()
+    .AddDomainServicesConfiguration()
        .AddRoomStrategyConfiguration()
        .AddDomainServicesConfiguration()
        .AddNotificationConfiguration()

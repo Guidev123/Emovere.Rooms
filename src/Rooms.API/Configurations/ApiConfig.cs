@@ -4,8 +4,9 @@ using Emovere.Infrastructure.EventSourcing;
 using Emovere.SharedKernel.Abstractions.Mediator;
 using Emovere.SharedKernel.Notifications;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using MidR.DependencyInjection;
+using Rooms.API.Application.Services;
+using Rooms.API.Application.Services.Interfaces;
 using Rooms.API.Endpoints;
 using Rooms.API.Middlewares;
 using Rooms.Domain.Interfaces.Repositories;
@@ -59,7 +60,14 @@ namespace Rooms.API.Configurations
 
         public static WebApplicationBuilder AddDomainServicesConfiguration(this WebApplicationBuilder builder)
         {
-            builder.Services.AddScoped<IRoomService, RoomService>();
+            builder.Services.AddTransient<IRoomCapacityValidationService, RoomCapacityValidationService>();
+
+            return builder;
+        }
+
+        public static WebApplicationBuilder AddApplicationServicesConfiguration(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddTransient<IRoomService, RoomService>();
 
             return builder;
         }

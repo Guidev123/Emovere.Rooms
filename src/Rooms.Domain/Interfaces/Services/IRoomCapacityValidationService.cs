@@ -2,7 +2,7 @@
 
 namespace Rooms.Domain.Interfaces.Services
 {
-    public interface IRoomService
+    public interface IRoomCapacityValidationService
     {
         Task<bool> AddParticipantAsync(Participant participant, Room room);
         Task<bool> RemoveParticipantAsync(Participant participant, Room room);

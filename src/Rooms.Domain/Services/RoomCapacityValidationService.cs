@@ -7,11 +7,11 @@ using Rooms.Domain.Strategies.Factories;
 
 namespace Rooms.Domain.Services
 {
-    public sealed class RoomService(IAddParticipantStrategyFactory strategyFactory,
+    public sealed class RoomCapacityValidationService(IAddParticipantStrategyFactory strategyFactory,
                                            INotificator notificator,
                                            IRoomRepository roomRepository,
                                            IUnitOfWork unitOfWork)
-                                         : IRoomService
+                                         : IRoomCapacityValidationService
     {
         public async Task<bool> AddParticipantAsync(Participant participant, Room room)
         {

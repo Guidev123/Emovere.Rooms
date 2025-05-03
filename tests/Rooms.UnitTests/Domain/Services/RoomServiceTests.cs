@@ -213,7 +213,7 @@ namespace Rooms.UnitTests.Domain.Services
                 new Participant(Guid.NewGuid(), roomId, _faker.Internet.Email()));
         }
 
-        private RoomService GetRoomService(IAddParticipantStrategy strategy)
+        private RoomCapacityValidationService GetRoomService(IAddParticipantStrategy strategy)
         {
             return new(
                 _strategyFactory.Object,
