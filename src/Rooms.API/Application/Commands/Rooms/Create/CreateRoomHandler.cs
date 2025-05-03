@@ -1,5 +1,4 @@
-﻿using Emovere.Communication.IntegrationEvents;
-using Emovere.Infrastructure.Bus;
+﻿using Emovere.Infrastructure.Bus;
 using Emovere.SharedKernel.Abstractions;
 using Emovere.SharedKernel.Notifications;
 using Emovere.SharedKernel.Responses;
@@ -19,14 +18,14 @@ namespace Rooms.API.Application.Commands.Rooms.Create
         public override async Task<Response<CreateRoomResponse>> ExecuteAsync(CreateRoomCommand request, CancellationToken cancellationToken)
         {
             if (!ExecuteValidation(new CreateRoomValidator(), request))
-                return Response<CreateRoomResponse>.Failure(GetNotifications(), EReportMessages.VALIDATION_ERROR.GetEnumDescription());
+                return Response<CreateRoomResponse>.Failure(Notifications, EReportMessages.VALIDATION_ERROR.GetEnumDescription());
 
             var room = request.MapToEntity();
             var result = await SaveRoomAsync(room);
             if (!result)
             {
                 Notify(EReportMessages.FAIL_TO_PERSIST_DATA.GetEnumDescription());
-                return Response<CreateRoomResponse>.Failure(GetNotifications());
+                return Response<CreateRoomResponse>.Failure(Notifications);
             }
 
             await messageBus.PublishAsync(room.MapToIntegrationEvent(), cancellationToken);

@@ -11,6 +11,7 @@ namespace Rooms.API.Endpoints
 
             endpoints.MapGroup("api/v1/rooms")
                 .WithTags("Rooms")
+                .RequireAuthorization()
                 .MapEndpoint<CreateRoomEndpoint>();
         }
 

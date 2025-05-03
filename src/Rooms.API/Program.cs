@@ -3,6 +3,8 @@ using Rooms.API.Configurations;
 var builder = WebApplication.CreateBuilder(args);
 
 builder
+    .AddInfrastructureServicesConfiguration()
+    .AddServicesConfiguration()
     .AddApplicationServicesConfiguration()
     .AddDomainServicesConfiguration()
        .AddRoomStrategyConfiguration()
@@ -14,9 +16,8 @@ builder
        .AddMessageBusConfiguration()
        .AddEmailServicesConfiguration()
        .AddSwaggerConfig()
-       .AddSecurityConfiguration()
+       .AddSecurityConfig()
        .AddBackgroundServicesConfiguration()
-       .AddServicesConfiguration()
        .AddCustomMiddlewares();
 
 var app = builder.Build();
@@ -24,10 +25,8 @@ var app = builder.Build();
 app.UseEndpoints()
     .UseMiddlewares()
     .UseOpenApi()
-    .UseSwaggerConfig()
-    .UseHttpsRedirection()
-    .UseAuthentication()
-    .UseAuthorization();
+    .UseApiSecurityConfig()
+    .UseSwaggerConfig(builder);
 
 app.Run();
 

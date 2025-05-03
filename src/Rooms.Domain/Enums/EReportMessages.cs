@@ -19,6 +19,9 @@ namespace Rooms.Domain.Enums
 
         [Description("Error: Internal Server Error.")]
         INTERNAL_SERVER_ERROR,
+
+        [Description("Error: User not found.")]
+        USER_NOT_FOUND,
     }
 
     public static class EnumExtension

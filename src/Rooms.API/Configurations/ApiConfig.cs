@@ -16,6 +16,7 @@ using Rooms.Domain.Strategies.Factories;
 using Rooms.Infrastructure.BackgroundServices;
 using Rooms.Infrastructure.Data.Contexts;
 using Rooms.Infrastructure.Data.Repositories;
+using Rooms.Infrastructure.Services;
 using SendGrid.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -28,14 +29,6 @@ namespace Rooms.API.Configurations
             builder.Services.AddOpenApi();
             builder.Services.AddEventStoreConfiguration();
             builder.Services.AddHttpContextAccessor();
-
-            return builder;
-        }
-
-        public static WebApplicationBuilder AddSecurityConfiguration(this WebApplicationBuilder builder)
-        {
-            builder.Services.AddAuthentication();
-            builder.Services.AddAuthorization();
 
             return builder;
         }
@@ -61,6 +54,13 @@ namespace Rooms.API.Configurations
         public static WebApplicationBuilder AddDomainServicesConfiguration(this WebApplicationBuilder builder)
         {
             builder.Services.AddTransient<IRoomCapacityValidationService, RoomCapacityValidationService>();
+
+            return builder;
+        }
+
+        public static WebApplicationBuilder AddInfrastructureServicesConfiguration(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddScoped<IAspNetUser, AspNetUser>();
 
             return builder;
         }
