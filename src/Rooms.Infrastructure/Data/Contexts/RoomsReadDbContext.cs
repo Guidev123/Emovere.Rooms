@@ -3,10 +3,14 @@ using Rooms.Domain.Entities;
 
 namespace Rooms.Infrastructure.Data.Contexts
 {
-    public sealed class RoomsReadDbContext(DbContextOptions<RoomsReadDbContext> options) : DbContext(options)
+    public sealed class RoomsReadDbContext : DbContext
     {
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Participant> Participants { get; set; }
+
+        public RoomsReadDbContext(DbContextOptions<RoomsReadDbContext> options) : base(options)
+        {
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
