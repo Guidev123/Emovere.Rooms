@@ -1,12 +1,7 @@
 ﻿using Bogus;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json;
-using Rooms.API.Configurations.Extensions;
 using System.Net.Http.Headers;
-using System.Text;
+using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace Rooms.IntegrationTests.Shared
@@ -19,82 +14,51 @@ namespace Rooms.IntegrationTests.Shared
     {
         public readonly SalesAppFactory<TProgram> Factory;
         public HttpClient HttpClient;
+        private readonly HttpClient _authHttpClient;
+
         public Faker Faker = new();
 
         public IntegrationTestsFixture()
         {
             var clientOptions = new WebApplicationFactoryClientOptions
             {
-                BaseAddress = new Uri("http://localhost"),
+                BaseAddress = new Uri("https://localhost:7103"),
             };
 
             Factory = new SalesAppFactory<TProgram>();
             HttpClient = Factory.CreateClient(clientOptions);
-        }
-
-        public StringContent GetContent(object data, NamingStrategy namingStrategy)
-        {
-            var settings = new JsonSerializerSettings
+            _authHttpClient = new()
             {
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = namingStrategy
-                }
+                BaseAddress = new Uri("https://localhost:7275")
             };
-
-            var json = JsonConvert.SerializeObject(data, settings);
-            return new StringContent(json, Encoding.UTF8, "application/json");
         }
 
-        public async Task<T?> DeserializeObjectResponseAsync<T>(HttpResponseMessage response, NamingStrategy namingStrategy)
+        public async Task LoginUserAsync()
         {
-            var settings = new JsonSerializerSettings
-            {
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = namingStrategy
-                }
-            };
-
-            var json = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<T>(json, settings);
-        }
-
-        public async Task LoginUserAsync(HttpClient httpClient)
-        {
-            using var scope = Factory.Services.CreateScope();
-            var keycloak = scope.ServiceProvider.GetRequiredService<IOptions<KeycloakExtension>>().Value;
-
-            var requestContent = new FormUrlEncodedContent(
-            [
-                new KeyValuePair<string, string>("grant_type", "client_credentials"),
-                new KeyValuePair<string, string>("client_id", keycloak.ClientId),
-                new KeyValuePair<string, string>("client_secret", keycloak.ClientSecret)
-            ]);
-
-            var newHttpClient = new HttpClient();
-
-            var response = await newHttpClient.PostAsync(
-                $"{keycloak.BaseUrl}/realms/{keycloak.CurrentRealm}/protocol/openid-connect/token",
-                requestContent).ConfigureAwait(false);
+            var response = await _authHttpClient.PostAsJsonAsync("/api/v1/authentication/login", new LoginRequest("test@test.com", "Test@123"));
 
             response.EnsureSuccessStatusCode();
 
-            var token = await DeserializeObjectResponseAsync<Token>(response, new SnakeCaseNamingStrategy());
+            var token = await response.Content.ReadFromJsonAsync<Response<Token>>(new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            });
 
-            httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token?.AccessToken);
+            HttpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token?.Data?.AccessToken);
         }
 
         public void Dispose()
         {
             Factory.Dispose();
             HttpClient.Dispose();
+            _authHttpClient.Dispose();
             GC.SuppressFinalize(this);
         }
     }
 
     public record Response(bool? IsSuccess, List<string?>? Errors, string? Message);
+    public record LoginRequest(string Email, string Password);
     public record Token(string AccessToken);
     public record Response<T>(bool? IsSuccess, List<string?>? Errors, string? Message, T? Data);
 }

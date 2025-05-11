@@ -7,6 +7,7 @@ builder
     .AddServicesConfiguration()
     .AddApplicationServicesConfiguration()
     .AddDomainServicesConfiguration()
+    .AddSerilog()
        .AddRoomStrategyConfiguration()
        .AddDomainServicesConfiguration()
        .AddNotificationConfiguration()
@@ -16,17 +17,18 @@ builder
        .AddMessageBusConfiguration()
        .AddEmailServicesConfiguration()
        .AddSwaggerConfig()
-       .AddSecurityConfig()
+       .AddSecurityConfiguration()
        .AddBackgroundServicesConfiguration()
        .AddCustomMiddlewares();
 
 var app = builder.Build();
 
 app.UseEndpoints()
+    .UseSerilogSettings()
     .UseMiddlewares()
     .UseOpenApi()
     .UseApiSecurityConfig()
-    .UseSwaggerConfig(builder);
+    .UseSwaggerConfig();
 
 app.Run();
 

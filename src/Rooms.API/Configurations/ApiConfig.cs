@@ -3,6 +3,7 @@ using Emovere.Infrastructure.Email;
 using Emovere.Infrastructure.EventSourcing;
 using Emovere.SharedKernel.Abstractions.Mediator;
 using Emovere.SharedKernel.Notifications;
+using KeyPairJWT.Configuration;
 using Microsoft.EntityFrameworkCore;
 using MidR.DependencyInjection;
 using Rooms.API.Application.Services;
@@ -18,6 +19,7 @@ using Rooms.Infrastructure.Data.Contexts;
 using Rooms.Infrastructure.Data.Repositories;
 using Rooms.Infrastructure.Services;
 using SendGrid.Extensions.DependencyInjection;
+using Serilog;
 using System.Reflection;
 
 namespace Rooms.API.Configurations
@@ -51,6 +53,19 @@ namespace Rooms.API.Configurations
             return builder;
         }
 
+        public static WebApplicationBuilder AddSerilog(this WebApplicationBuilder builder)
+        {
+            builder.Host.UseSerilog((context, services, configuration) =>
+            {
+                configuration.ReadFrom.Configuration(context.Configuration);
+
+                if (context.HostingEnvironment.IsDevelopment())
+                    configuration.WriteTo.Debug();
+            });
+
+            return builder;
+        }
+
         public static WebApplicationBuilder AddDomainServicesConfiguration(this WebApplicationBuilder builder)
         {
             builder.Services.AddTransient<IRoomCapacityValidationService, RoomCapacityValidationService>();
@@ -68,6 +83,14 @@ namespace Rooms.API.Configurations
         public static WebApplicationBuilder AddApplicationServicesConfiguration(this WebApplicationBuilder builder)
         {
             builder.Services.AddTransient<IRoomService, RoomService>();
+
+            return builder;
+        }
+
+        public static WebApplicationBuilder AddSecurityConfiguration(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddJwtConfiguration(builder.Configuration);
+            builder.Services.AddAuthorization();
 
             return builder;
         }
@@ -148,6 +171,31 @@ namespace Rooms.API.Configurations
             {
                 app.MapOpenApi();
             }
+
+            return app;
+        }
+
+        public static WebApplication UseApiSecurityConfig(this WebApplication app)
+        {
+            app.UseHttpsRedirection();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            return app;
+        }
+
+        public static WebApplication UseSerilogSettings(this WebApplication app)
+        {
+            app.UseSerilogRequestLogging(options =>
+            {
+                options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+                {
+                    diagnosticContext.Set("RequestHost", httpContext.Request.Host);
+                    diagnosticContext.Set("RequestPath", httpContext.Request.Path);
+                    diagnosticContext.Set("RequestMethod", httpContext.Request.Method);
+                };
+            });
 
             return app;
         }

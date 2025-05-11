@@ -1,5 +1,4 @@
 ﻿using Microsoft.OpenApi.Models;
-using Rooms.API.Configurations.Extensions;
 
 namespace Rooms.API.Configurations
 {
@@ -7,74 +6,48 @@ namespace Rooms.API.Configurations
     {
         public static WebApplicationBuilder AddSwaggerConfig(this WebApplicationBuilder builder)
         {
-            var appSettingsSection = builder.Configuration.GetSection(nameof(KeycloakExtension));
-            var appSettings = appSettingsSection.Get<KeycloakExtension>()
-                ?? throw new InvalidOperationException("Keycloak settings not found.");
-
-            builder.Services.Configure<KeycloakExtension>(appSettingsSection);
-
-            builder.Services.AddOpenApi();
-            builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
-                c.CustomSchemaIds(id => id.FullName!.Replace('+', '-'));
-
-                c.AddSecurityDefinition("Keycloak", new OpenApiSecurityScheme
+                c.SwaggerDoc("v1", new OpenApiInfo()
                 {
-                    Type = SecuritySchemeType.OAuth2,
-                    Flows = new OpenApiOAuthFlows
-                    {
-                        AuthorizationCode = new OpenApiOAuthFlow
-                        {
-                            AuthorizationUrl = new Uri(appSettings.AuthorizationUrl),
-                            TokenUrl = new Uri(appSettings.TokenUrl),
-                            Scopes = new Dictionary<string, string>
-                            {
-                                { "openid", "OpenID Connect" },
-                                { "profile", "Profile" }
-                            }
-                        }
-                    }
+                    Title = "Rooms - API",
+                    Contact = new OpenApiContact() { Name = "Guilherme Nascimento", Email = "guirafaelrn@gmail.com" },
+                    License = new OpenApiLicense() { Name = "MIT", Url = new Uri("https://opensource.org/license/MIT") }
                 });
 
-                var securityRequirement = new OpenApiSecurityRequirement
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
+                    Description = "Enter the JWT token in this format: Bearer <your token>",
+                    Name = "Authorization",
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
                     {
                         new OpenApiSecurityScheme
                         {
-                            Reference = new OpenApiReference
+                                Reference = new OpenApiReference
                             {
                                 Type = ReferenceType.SecurityScheme,
-                                Id = "Keycloak"
-                            },
-                            In = ParameterLocation.Header,
-                            Name = "Bearer",
-                            Scheme = "Bearer"
+                                Id = "Bearer"
+                            }
                         },
                         Array.Empty<string>()
                     }
-                };
-                c.AddSecurityRequirement(securityRequirement);
+            });
             });
 
             return builder;
         }
 
-        public static WebApplication UseSwaggerConfig(this WebApplication app, WebApplicationBuilder builder)
+        public static WebApplication UseSwaggerConfig(this WebApplication app)
         {
-            var appSettingsSection = builder.Configuration.GetSection(nameof(KeycloakExtension));
-            var appSettings = appSettingsSection.Get<KeycloakExtension>()
-                ?? throw new InvalidOperationException("Keycloak settings not found.");
-
             app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
-                c.OAuthClientId(appSettings.ClientId);
-                c.OAuthClientSecret(appSettings.ClientSecret);
-                c.OAuthUsePkce();
-                c.OAuthScopeSeparator(" ");
-            });
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"));
 
             return app;
         }
