@@ -10,11 +10,11 @@ namespace Rooms.Infrastructure.Data.Repositories
                                      : IRoomRepository
     {
         public async Task<(IEnumerable<Room> Rooms, int count)> GetAllByHostIdAsync(Guid hostId, int pageNumber, int pageSize)
-            => (await readContext.Rooms.AsNoTracking().Skip((pageNumber - 1)  * pageSize).Take(pageSize).ToListAsync(), 
+            => (await readContext.Rooms.AsNoTracking().Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync(),
                 await readContext.Rooms.AsNoTracking().CountAsync());
 
         public async Task<Room?> GetByIdAsync(Guid id)
-            => await readContext.Rooms.AsNoTrackingWithIdentityResolution().Include(r => r.Participants).FirstOrDefaultAsync(x => x.Id == id);
+            => await readContext.Rooms.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
         public void Create(Room room)
             => writeContext.Rooms.Add(room);
