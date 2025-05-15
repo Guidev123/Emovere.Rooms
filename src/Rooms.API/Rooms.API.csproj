@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Emovere.Core\src\Emovere.Communication\Emovere.Communication.csproj" />
     <ProjectReference Include="..\..\..\Emovere.Core\src\Emovere.Infrastructure\Emovere.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\Emovere.Core\src\Emovere.WebApi\Emovere.WebApi.csproj" />
     <ProjectReference Include="..\Rooms.Infrastructure\Rooms.Infrastructure.csproj" />
   </ItemGroup>
 

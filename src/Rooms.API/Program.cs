@@ -1,25 +1,20 @@
+using Emovere.WebApi.Config;
 using Rooms.API.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder
-    .AddInfrastructureServicesConfiguration()
-    .AddServicesConfiguration()
-    .AddApplicationServicesConfiguration()
-    .AddDomainServicesConfiguration()
-    .AddSerilog()
-       .AddRoomStrategyConfiguration()
-       .AddDomainServicesConfiguration()
-       .AddNotificationConfiguration()
-       .AddMediatorHandlersConfiguration()
-       .AddContextsConfiguration()
-       .AddRepositoriesConfiguration()
-       .AddMessageBusConfiguration()
-       .AddEmailServicesConfiguration()
-       .AddSwaggerConfig()
-       .AddSecurityConfiguration()
-       .AddBackgroundServicesConfiguration()
-       .AddCustomMiddlewares();
+    .AddSharedConfig()
+        .AddServicesConfiguration()
+        .AddApplicationServicesConfiguration()
+        .AddDomainServicesConfiguration()
+        .AddRoomStrategyConfiguration()
+        .AddDomainServicesConfiguration()
+        .AddMediatorHandlersConfiguration()
+        .AddContextsConfiguration()
+        .AddRepositoriesConfiguration()
+        .AddSwaggerConfig()
+        .AddBackgroundServicesConfiguration();
 
 var app = builder.Build();
 

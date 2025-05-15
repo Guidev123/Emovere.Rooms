@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emovere.Communication", "..
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rooms.IntegrationTests", "tests\Rooms.IntegrationTests\Rooms.IntegrationTests.csproj", "{60561275-0E9D-47FC-9DCF-AC73C1717606}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emovere.WebApi", "..\Emovere.Core\src\Emovere.WebApi\Emovere.WebApi.csproj", "{42B9B30F-E28F-F421-251A-6D479F212311}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{60561275-0E9D-47FC-9DCF-AC73C1717606}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60561275-0E9D-47FC-9DCF-AC73C1717606}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60561275-0E9D-47FC-9DCF-AC73C1717606}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42B9B30F-E28F-F421-251A-6D479F212311}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42B9B30F-E28F-F421-251A-6D479F212311}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42B9B30F-E28F-F421-251A-6D479F212311}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42B9B30F-E28F-F421-251A-6D479F212311}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +82,7 @@ Global
 		{F28A4DF3-4C14-C28D-FD44-83E8381A1DB4} = {5CF220C4-7A83-42FE-9968-2328F4F65EA0}
 		{F7471C39-570A-48ED-9799-FEBB8DD0C98B} = {5CF220C4-7A83-42FE-9968-2328F4F65EA0}
 		{60561275-0E9D-47FC-9DCF-AC73C1717606} = {0953A44D-D983-4684-BC5B-DE13BB328188}
+		{42B9B30F-E28F-F421-251A-6D479F212311} = {5CF220C4-7A83-42FE-9968-2328F4F65EA0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E9DFA65A-509C-4614-AF05-5A3A113A2517}

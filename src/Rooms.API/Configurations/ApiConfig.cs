@@ -1,15 +1,8 @@
-﻿using Emovere.Infrastructure.Bus;
-using Emovere.Infrastructure.Email;
-using Emovere.Infrastructure.EventSourcing;
-using Emovere.SharedKernel.Abstractions.Mediator;
-using Emovere.SharedKernel.Notifications;
-using KeyPairJWT.Configuration;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MidR.DependencyInjection;
 using Rooms.API.Application.Services;
 using Rooms.API.Application.Services.Interfaces;
 using Rooms.API.Endpoints;
-using Rooms.API.Middlewares;
 using Rooms.Domain.Interfaces.Repositories;
 using Rooms.Domain.Interfaces.Services;
 using Rooms.Domain.Services;
@@ -17,9 +10,6 @@ using Rooms.Domain.Strategies.Factories;
 using Rooms.Infrastructure.BackgroundServices;
 using Rooms.Infrastructure.Data.Contexts;
 using Rooms.Infrastructure.Data.Repositories;
-using Rooms.Infrastructure.Services;
-using SendGrid.Extensions.DependencyInjection;
-using Serilog;
 using System.Reflection;
 
 namespace Rooms.API.Configurations
@@ -29,8 +19,6 @@ namespace Rooms.API.Configurations
         public static WebApplicationBuilder AddServicesConfiguration(this WebApplicationBuilder builder)
         {
             builder.Services.AddOpenApi();
-            builder.Services.AddEventStoreConfiguration();
-            builder.Services.AddHttpContextAccessor();
 
             return builder;
         }
@@ -42,40 +30,9 @@ namespace Rooms.API.Configurations
             return builder;
         }
 
-        public static WebApplicationBuilder AddEmailServicesConfiguration(this WebApplicationBuilder builder)
-        {
-            builder.Services.AddSendGrid(x =>
-            {
-                x.ApiKey = builder.Configuration.GetValue<string>("EmailSettings:ApiKey");
-            });
-            builder.Services.AddScoped<IEmailService, EmailService>();
-
-            return builder;
-        }
-
-        public static WebApplicationBuilder AddSerilog(this WebApplicationBuilder builder)
-        {
-            builder.Host.UseSerilog((context, services, configuration) =>
-            {
-                configuration.ReadFrom.Configuration(context.Configuration);
-
-                if (context.HostingEnvironment.IsDevelopment())
-                    configuration.WriteTo.Debug();
-            });
-
-            return builder;
-        }
-
         public static WebApplicationBuilder AddDomainServicesConfiguration(this WebApplicationBuilder builder)
         {
             builder.Services.AddTransient<IRoomCapacityValidationService, RoomCapacityValidationService>();
-
-            return builder;
-        }
-
-        public static WebApplicationBuilder AddInfrastructureServicesConfiguration(this WebApplicationBuilder builder)
-        {
-            builder.Services.AddScoped<IAspNetUser, AspNetUser>();
 
             return builder;
         }
@@ -87,31 +44,8 @@ namespace Rooms.API.Configurations
             return builder;
         }
 
-        public static WebApplicationBuilder AddSecurityConfiguration(this WebApplicationBuilder builder)
-        {
-            builder.Services.AddJwtConfiguration(builder.Configuration);
-            builder.Services.AddAuthorization();
-
-            return builder;
-        }
-
-        public static WebApplicationBuilder AddCustomMiddlewares(this WebApplicationBuilder builder)
-        {
-            builder.Services.AddTransient<GlobalExceptionMiddleware>();
-
-            return builder;
-        }
-
-        public static WebApplicationBuilder AddNotificationConfiguration(this WebApplicationBuilder builder)
-        {
-            builder.Services.AddScoped<INotificator, Notificator>();
-
-            return builder;
-        }
-
         public static WebApplicationBuilder AddMediatorHandlersConfiguration(this WebApplicationBuilder builder)
         {
-            builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
             builder.Services.AddMidR(Assembly.GetExecutingAssembly());
 
             return builder;
@@ -136,13 +70,6 @@ namespace Rooms.API.Configurations
             return builder;
         }
 
-        public static WebApplicationBuilder AddMessageBusConfiguration(this WebApplicationBuilder builder)
-        {
-            builder.Services.AddMessageBus(builder.Configuration.GetConnectionString("MessageBusConnection") ?? string.Empty);
-
-            return builder;
-        }
-
         public static WebApplicationBuilder AddRepositoriesConfiguration(this WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<IRoomRepository, RoomRepository>();
@@ -158,44 +85,12 @@ namespace Rooms.API.Configurations
             return app;
         }
 
-        public static WebApplication UseMiddlewares(this WebApplication app)
-        {
-            app.UseMiddleware<GlobalExceptionMiddleware>();
-
-            return app;
-        }
-
         public static WebApplication UseOpenApi(this WebApplication app)
         {
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
             }
-
-            return app;
-        }
-
-        public static WebApplication UseApiSecurityConfig(this WebApplication app)
-        {
-            app.UseHttpsRedirection();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            return app;
-        }
-
-        public static WebApplication UseSerilogSettings(this WebApplication app)
-        {
-            app.UseSerilogRequestLogging(options =>
-            {
-                options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
-                {
-                    diagnosticContext.Set("RequestHost", httpContext.Request.Host);
-                    diagnosticContext.Set("RequestPath", httpContext.Request.Path);
-                    diagnosticContext.Set("RequestMethod", httpContext.Request.Method);
-                };
-            });
 
             return app;
         }
