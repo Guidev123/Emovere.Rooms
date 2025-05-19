@@ -13,10 +13,10 @@ namespace Rooms.API.Application.Commands.Rooms.Create
         }
 
         public Guid HostId { get; private set; }
-        public string Name { get; private set; } = string.Empty;
-        public string Details { get; private set; } = string.Empty;
-        public DateTime StartDate { get; private set; }
-        public DateTime? EndDate { get; private set; }
+        public string Name { get; } = string.Empty;
+        public string Details { get; } = string.Empty;
+        public DateTime StartDate { get; }
+        public DateTime? EndDate { get; }
 
         public void SetHostId(Guid hostId)
         {
