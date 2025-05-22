@@ -46,7 +46,6 @@ namespace Rooms.UnitTests.Domain.Services
             // Assert
             Assert.True(resultIsSuccess);
             Assert.Equal(1, room.ParticipantsQuantity);
-            _unitOfWorkMock.Verify(m => m.SaveChangesAsync(), Times.Once());
             _roomRepository.Verify(m => m.Update(room), Times.Once());
             _strategyFactory.Verify(m => m.GetStrategy(room.Plan), Times.Once());
         }
@@ -84,7 +83,6 @@ namespace Rooms.UnitTests.Domain.Services
             Assert.False(lastResult);
             Assert.Equal(Room.MAX_STANDARD_PARTICIPANTS, room.ParticipantsQuantity);
             Assert.Equal(Room.MAX_STANDARD_PARTICIPANTS, successfulAdditions);
-            _unitOfWorkMock.Verify(m => m.SaveChangesAsync(), Times.Exactly(Room.MAX_STANDARD_PARTICIPANTS));
             _roomRepository.Verify(m => m.Update(room), Times.Exactly(Room.MAX_STANDARD_PARTICIPANTS));
         }
 
@@ -101,7 +99,6 @@ namespace Rooms.UnitTests.Domain.Services
             var strategy = new PremiumRoomAddParticipantStrategy();
 
             _strategyFactory.Setup(f => f.GetStrategy(room.Plan)).Returns(strategy);
-            _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(true);
 
             var roomService = GetRoomService(strategy);
 
@@ -123,7 +120,6 @@ namespace Rooms.UnitTests.Domain.Services
             Assert.False(lastResult);
             Assert.Equal(Room.MAX_PREMIUM_PARTICIPANTS, room.ParticipantsQuantity);
             Assert.Equal(Room.MAX_PREMIUM_PARTICIPANTS, successfulAdditions);
-            _unitOfWorkMock.Verify(m => m.SaveChangesAsync(), Times.Exactly(Room.MAX_PREMIUM_PARTICIPANTS));
             _roomRepository.Verify(m => m.Update(room), Times.Exactly(Room.MAX_PREMIUM_PARTICIPANTS));
         }
 
@@ -162,7 +158,6 @@ namespace Rooms.UnitTests.Domain.Services
             Assert.False(lastResult);
             Assert.Equal(Room.MAX_VIP_PARTICIPANTS, room.ParticipantsQuantity);
             Assert.Equal(Room.MAX_VIP_PARTICIPANTS, successfulAdditions);
-            _unitOfWorkMock.Verify(m => m.SaveChangesAsync(), Times.Exactly(Room.MAX_VIP_PARTICIPANTS));
             _roomRepository.Verify(m => m.Update(room), Times.Exactly(Room.MAX_VIP_PARTICIPANTS));
         }
 
@@ -201,7 +196,6 @@ namespace Rooms.UnitTests.Domain.Services
             Assert.False(lastResult);
             Assert.Equal(Room.MAX_EXCLUSIVE_PARTICIPANTS, room.ParticipantsQuantity);
             Assert.Equal(Room.MAX_EXCLUSIVE_PARTICIPANTS, successfulAdditions);
-            _unitOfWorkMock.Verify(m => m.SaveChangesAsync(), Times.Exactly(Room.MAX_EXCLUSIVE_PARTICIPANTS));
             _roomRepository.Verify(m => m.Update(room), Times.Exactly(Room.MAX_EXCLUSIVE_PARTICIPANTS));
         }
 
@@ -240,6 +234,6 @@ namespace Rooms.UnitTests.Domain.Services
             return strategy;
         }
 
-        #endregion
+        #endregion Private Methods
     }
 }

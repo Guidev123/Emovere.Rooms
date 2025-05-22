@@ -26,15 +26,15 @@ namespace Rooms.Domain.Services
             }
 
             roomRepository.Update(room);
-            return await unitOfWork.SaveChangesAsync();
+            return true;
         }
 
-        public async Task<bool> RemoveParticipantAsync(Participant participant, Room room)
+        public bool RemoveParticipant(Participant participant, Room room)
         {
             room.RemoveParticipant(participant);
 
             roomRepository.Update(room);
-            return await unitOfWork.SaveChangesAsync();
+            return true;
         }
     }
 }
